@@ -1,41 +1,53 @@
 import './App.css';
-import { Form, Input, Select, DatePicker, Checkbox, Button } from 'antd'
+import { Form, Input, Select, DatePicker, Checkbox, Button } from 'antd';
+import { BrowserRouter as Router, 
+  Routes, 
+  Route, 
+  useNavigate,
+  useLocation
+} from 'react-router-dom';
 
-function App() {
+function RegistrationForm() {
+  const navigate = useNavigate();
   
+  const onFinish = (values) => {
+    navigate('/welcome', { state: { name: values.fullname } });
+  };
   
   return (
     <div className="App">
-       <header className="App-header">
-       <h1 style={{
-        textAlign: 'center'
-       }
-      }
-       >Simple Registration Form </h1>
-          <Form 
+      <header className="App-header">
+        <h1 
+        style={{ textAlign: 'center' }}
+        >
+          Simple Registration Form
+        </h1>
+        <Form 
           autoComplete="off"
-          labelCol={{ span: 7}} 
-          wrapperCol={{ span: 14 }}>
-            <Form.Item name="fullname" label="Full Name" rules={[
-              {
-                required: true,
-                message: 'Please enter your name',
-              },
-              {
-                whitespace: true,
-                message: 'This field should not be empty',
-              },
-              {
-                min: 3,
-                message: 'Name should be more than 3 Characters',
-              },
-            ]}
-            hasFeedback
-            >
-              <Input placeholder="Enter Name"></Input>
-            </Form.Item>
-
-            <Form.Item 
+          labelCol={{ span: 7}}
+          wrapperCol={{ span: 14 }}
+          onFinish={onFinish}
+        >
+          
+          <Form.Item name="fullname" label="Full Name" rules={[
+            {
+              required: true,
+              message: 'Please enter your name',
+            },
+            {
+              whitespace: true,
+              message: 'This field should not be empty',
+            },
+            {
+              min: 3,
+              message: 'Name should be more than 3 Characters',
+            },
+          ]}
+          hasFeedback
+          >
+            <Input placeholder="Enter Name"></Input>
+          </Form.Item>
+          <Form.Item 
             name="email" 
             label="Email" 
             rules={[
@@ -110,14 +122,37 @@ function App() {
                 Agree to our <a href="#">Terms and Conditions</a>
                 </Checkbox>
             </Form.Item>
-
-            <Form.Item wrapperCol={{span: 24}}>
-              <Button type="primary" htmlType="submit" block> Register</Button>
-            </Form.Item>
-
-          </Form>
-       </header>
+          <Form.Item wrapperCol={{span: 24}}>
+            <Button type="primary" htmlType="submit" block>Register</Button>
+          </Form.Item>
+        </Form>
+      </header>
     </div>
+  );
+}
+
+function Welcome() {
+  const location = useLocation();
+  const name = location.state?.name || 'Guest';
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1 style={{ textAlign: 'center' }}>Hey There, {name}!</h1>
+        <p>Thank you for registering with us.</p>
+      </header>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<RegistrationForm />} />
+        <Route path="/welcome" element={<Welcome />} />
+      </Routes>
+    </Router>
   );
 }
 
